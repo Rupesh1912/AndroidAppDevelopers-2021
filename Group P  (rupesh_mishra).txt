@@ -1,0 +1,173 @@
+<resources>
+    <string name='app_name'>AndroidLayout</string>
+    <string name='menu_settings'>Settings</string>
+    <string name='title_activity_xmllayout'>XMLLayoutActivity</string>
+    <string name='c4r'>Code4Reference.com</string>
+    <string name='OtherActivity'>Other Activity</string>
+    <string name='dynamic_layout_activity'>Dynamic Layout Activity</string>
+</resources>
+
+
+## Now, we will write very simple layout file which contains Textview, EditText and Button UI components as shown below.
+
+<LinearLayout xmlns:android='http://schemas.android.com/apk/res/android'
+    xmlns:tools='http://schemas.android.com/tools'
+    android:layout_width='match_parent'
+    android:layout_height='match_parent'
+    android:orientation='vertical'>
+ 
+    <TextView
+        android:layout_width='match_parent'
+        android:layout_height='wrap_content'
+        android:padding='@dimen/padding_medium'
+        android:text='@string/c4r'
+        tools:context='.XMLLayoutActivity' />
+    <EditText
+        android:layout_width='match_parent'
+        android:layout_height='wrap_content'
+        android:padding='@dimen/padding_medium'
+        android:hint='@string/c4r'
+        tools:context='.XMLLayoutActivity'/>
+     
+    <Button
+        android:id='@+id/btOtherActivity'
+        android:layout_width='match_parent'
+        android:layout_height='wrap_content'
+        android:padding='@dimen/padding_medium'
+        android:text='@string/OtherActivity'
+        />
+</LinearLayout>
+
+
+##Let’s define the first activity class called XMLLayoutActivity. This Activity uses the layout file defined above.
+
+package com.code4reference.androidlayout;
+ 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+ 
+public class XMLLayoutActivity extends Activity {
+ 
+ Button btOtherActivity;
+ 
+ @Override
+ public void onCreate(Bundle savedInstanceState) {
+  super.onCreate(savedInstanceState);
+  // Attaching the layout file with the current Activity.
+  setContentView(R.layout.activity_xmllayout);
+  // Associate the Button object with the Button defined in the layout
+  // file. Notice that R.id.btOtherActivity is associated with the 
+  //button in activity_xmllayout.xml layoutfile.
+  btOtherActivity = (Button) findViewById(R.id.btOtherActivity);
+  //Attaching the OnclickListener with the button.
+  btOtherActivity.setOnClickListener(new OnClickListener() {
+   @Override
+   public void onClick(View view) {
+    //Creating an Intent which will invoke
+    //the other Activity (DynamicLayoutActivity).
+    Intent intent = new Intent(getApplicationContext(),
+      DynamicLayoutActivity.class);
+    //This method will start the other activity.
+    startActivity(intent);
+   }
+  });
+ }
+}
+
+package com.code4reference.androidlayout;
+ 
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.TextView;
+import android.widget.Toast;
+ 
+public class DynamicLayoutActivity extends Activity {
+ 
+ @Override
+ protected void onCreate(Bundle savedInstanceState) {
+  super.onCreate(savedInstanceState);
+  // This will create the LinearLayout
+  LinearLayout ll = new LinearLayout(this);
+  ll.setOrientation(LinearLayout.VERTICAL);
+   
+  // Configuring the width and height of the linear layout.
+  LayoutParams llLP = new LayoutParams(
+    //android:layout_width='match_parent' an in xml
+    LinearLayout.LayoutParams.MATCH_PARENT,
+    //android:layout_height='wrap_content'
+    LinearLayout.LayoutParams.MATCH_PARENT);
+  ll.setLayoutParams(llLP);
+ 
+  TextView tv = new TextView(this);
+  LayoutParams lp = new LayoutParams(
+    LinearLayout.LayoutParams.MATCH_PARENT,
+    LinearLayout.LayoutParams.WRAP_CONTENT);
+ 
+  tv.setLayoutParams(lp);
+  //android:text='@string/c4r'
+  tv.setText(R.string.c4r);
+  //android:padding='@dimen/padding_medium'
+  tv.setPadding(8, 8, 8, 8);
+  ll.addView(tv);
+  EditText et = new EditText(this);
+  et.setLayoutParams(lp);
+  et.setHint(R.string.c4r);
+  et.setPadding(8, 8, 8, 8);
+   
+  ll.addView(et);
+  Button bt = new Button(this);
+  bt.setText(R.string.OtherActivity);
+  bt.setPadding(8, 8, 8, 8);
+  ll.addView(bt);
+  //Now finally attach the Linear layout to the current Activity.
+  setContentView(ll);
+ 
+  //Attach OnClickListener to the button.
+  bt.setOnClickListener(new OnClickListener() {
+   @Override
+   public void onClick(View view) {
+    Toast.makeText(getApplicationContext(),
+      'This is dynamic activity', Toast.LENGTH_LONG).show();
+   }
+  });
+ }
+}
+
+
+<manifest xmlns:android='http://schemas.android.com/apk/res/android'
+    package='com.code4reference.androidlayout'
+    android:versionCode='1'
+    android:versionName='1.0' >
+    <uses-sdk
+        android:minSdkVersion='8'
+        android:targetSdkVersion='15' />
+    <application
+        android:icon='@drawable/ic_launcher'
+        android:label='@string/app_name'
+        android:theme='@style/AppTheme' >
+        <activity
+            android:name='.XMLLayoutActivity'
+            android:label='@string/title_activity_xmllayout' >
+            <intent-filter>
+                <action android:name='android.intent.action.MAIN' />
+                <category android:name='android.intent.category.LAUNCHER' />
+            </intent-filter>
+        </activity>
+        <activity android:name='.DynamicLayoutActivity'
+            android:label='@string/dynamic_layout_activity'>
+            <intent-filter >
+                <category android:name='android.intent.category.LAUNCHER'/>
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
